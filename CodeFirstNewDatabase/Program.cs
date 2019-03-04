@@ -1,21 +1,63 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace CodeFirstNewDatabase
 {
     class Program
     {
+        private const string Value = "-------------------------------------------------------------------";
+
         static void Main(string[] args)
         {
-            // The code provided will print ‘Hello World’ to the console.
-            // Press Ctrl+F5 (or go to Debug > Start Without Debugging) to run your app.
-            Console.WriteLine("Hello World!");
-            Console.ReadKey();
+            using (var db = new BloggingContext())
+            {
+                // Display all Blog information 
+                var allblogs = from b in db.Blogs
+                    orderby b.Name
+                    select b;
+                Console.WriteLine(@"Display Blog Information");
+                DisplayBlog(allblogs);
 
-            // Go to http://aka.ms/dotnet-get-started-console to continue learning how to build a console app! 
+                //  Display all Blog information 
+                var allPost = from b in db.Posts
+                    orderby b.Title
+                    select b;
+                Console.WriteLine(@"Display Post Information");
+                DisplayBlog(allPost);
+
+                //Console.WriteLine(@"Enter New Name of blog.........");
+                //var name = Console.ReadLine();
+                //Console.WriteLine(@"Enter New Url of blog.........");
+                //var url = Console.ReadLine();
+
+                //var newBlog = new Blog(){Name = name, Url = url};
+                //db.Blogs.Add(newBlog);
+                //// for changes occur in db call the db.savechanes method
+                //db.SaveChanges();
+                //DisplayBlog(allblogs);
+
+                Console.WriteLine(@"Enter the BlogId");
+                var blogId = int.Parse(Console.ReadLine() ?? throw new InvalidOperationException());
+
+                var updateBlog = db.Blogs.Where(d => d.BlogId == blogId);
+                Console.WriteLine(updateBlog);
+
+            }
+
+            Console.ReadKey();
+        }
+
+        static void DisplayBlog(dynamic db)
+        {
+            
+            foreach (var item in db)
+            {
+                Console.WriteLine(item);
+            }
+
+            Console.WriteLine(Value);
         }
     }
 }
